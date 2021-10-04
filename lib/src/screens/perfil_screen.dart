@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:practica2/src/database/database_helper_perfil.dart';
 import 'package:practica2/src/utils/color_settings.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:http/http.dart' as http;
+import '../models/perfil_model.dart';
+import '../database/database_helper_perfil.dart';
 
 class PerfilScreen extends StatefulWidget {
   PerfilScreen({Key? key}) : super(key: key);
@@ -15,10 +14,46 @@ class PerfilScreen extends StatefulWidget {
 
 class _PerfilScreenState extends State<PerfilScreen> {
   //posteriormente sera inicializado
+  TextEditingController _controllerNombre = TextEditingController();
+  TextEditingController _controllerPaterno = TextEditingController();
+  TextEditingController _controllerMaterno = TextEditingController();
+  TextEditingController _controllerTelefono = TextEditingController();
+  TextEditingController _controllerEmail = TextEditingController();
 
   late DatabaseHelperPerfil _databaseHelperPerfil;
   File? image;
   final picker = ImagePicker();
+  PerfilModel? perfil;
+
+  bool bandera1 = false;
+  bool bandera2 = false;
+  bool bandera3 = false;
+  bool bandera4 = false;
+  bool bandera5 = false;
+
+  Future obtenerInformacion() async {
+    this._databaseHelperPerfil = DatabaseHelperPerfil();
+    try {
+      await this._databaseHelperPerfil.getPerfil(1).then((PerfilModel perfil) {
+        if (perfil.id != null) {
+          setState(() {
+            this.perfil = perfil;
+            this.image = File(this.perfil!.avatar!);
+            print(this.image);
+            _controllerNombre.text = this.perfil!.nombre!;
+            _controllerPaterno.text = this.perfil!.aPaterno!;
+            _controllerMaterno.text = this.perfil!.aMaterno!;
+            _controllerTelefono.text = this.perfil!.telefono!;
+            _controllerEmail.text = this.perfil!.email!;
+          });
+        } else {
+          this.perfil = null;
+        }
+      });
+    } catch (Exception) {
+      print(Exception);
+    }
+  }
 
   Future selectImage(opcion) async {
     var picketFile;
@@ -40,20 +75,65 @@ class _PerfilScreenState extends State<PerfilScreen> {
     }
   }
 
+  guardar() {
+    var nombre, paterno, materno, telefono, email, avatar;
+    try {
+      if (image != null) {
+        avatar = image?.path;
+      } else {
+        avatar = '';
+      }
+      nombre = _controllerNombre.text;
+      paterno = _controllerPaterno.text;
+      materno = _controllerMaterno.text;
+      telefono = _controllerTelefono.text;
+      email = _controllerEmail.text;
+
+      PerfilModel info = PerfilModel(
+          id: 1,
+          avatar: avatar,
+          nombre: nombre,
+          aMaterno: materno,
+          aPaterno: paterno,
+          telefono: telefono,
+          email: email);
+      if (perfil == null) {
+        _databaseHelperPerfil.insert(info.toMap()).then((result) {
+          if (result > 0) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('La información se guardo correctamente')));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('La solicitud no se completo')));
+          }
+        });
+      } else {
+        _databaseHelperPerfil.update(info.toMap()).then((result) {
+          if (result > 0) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('La información se actualizo correctamente')));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('La solicitud no se completo')));
+          }
+        });
+      }
+    } catch (Exception) {
+      print("Error");
+    }
+  }
+
   //implementar metodo antes de que se muestra la interfaz
   @override
   void initState() {
-    super.initState();
     _databaseHelperPerfil = DatabaseHelperPerfil();
+    this.obtenerInformacion();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: ColorSettings.colorPrimary,
-      //   title: Text('Perfil'),
-      // ),
       body: ListView(
         padding: EdgeInsets.only(top: 45, left: 20, right: 20),
         children: [
@@ -84,16 +164,18 @@ class _PerfilScreenState extends State<PerfilScreen> {
                             offset: Offset(0, 20))
                       ]),
                   child: ClipOval(
-                    child: image == null
+                    child: (image == null || image!.path == '')
                         ? Image.network(
                             'https://image.flaticon.com/icons/png/512/1177/1177568.png',
                             width: 180,
                             height: 180,
+                            fit: BoxFit.cover,
                           )
                         : Image.file(
                             image!,
                             width: 180,
                             height: 180,
+                            fit: BoxFit.cover,
                           ),
                   ),
                 ),
@@ -175,8 +257,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   height: 65,
                   margin: EdgeInsets.only(top: 10),
                   child: TextField(
+                    controller: _controllerNombre,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
+                      errorText: bandera1 ? 'Campo obligatorio' : null,
                       labelText: "Nombre",
                       labelStyle:
                           TextStyle(fontSize: 18, color: Colors.black54),
@@ -189,8 +273,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   height: 65,
                   margin: EdgeInsets.only(top: 10),
                   child: TextField(
+                    controller: _controllerPaterno,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
+                      errorText: bandera2 ? 'Campo obligatorio' : null,
                       labelText: "Apellido paterno",
                       labelStyle:
                           TextStyle(fontSize: 18, color: Colors.black54),
@@ -203,8 +289,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   height: 65,
                   margin: EdgeInsets.only(top: 10),
                   child: TextField(
+                    controller: _controllerMaterno,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
+                      errorText: bandera3 ? 'Campo obligatorio' : null,
                       labelText: "Apellido materno",
                       labelStyle:
                           TextStyle(fontSize: 18, color: Colors.black54),
@@ -217,8 +305,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   height: 65,
                   margin: EdgeInsets.only(top: 10),
                   child: TextField(
+                    controller: _controllerTelefono,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
+                      errorText: bandera4 ? 'Campo obligatorio' : null,
                       labelText: "Teléfono",
                       labelStyle:
                           TextStyle(fontSize: 18, color: Colors.black54),
@@ -232,8 +322,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   height: 65,
                   margin: EdgeInsets.only(top: 10),
                   child: TextField(
+                    controller: _controllerEmail,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                        errorText: bandera5 ? 'Campo obligatorio' : null,
                         labelText: "Correo electronico",
                         labelStyle:
                             TextStyle(fontSize: 18, color: Colors.black54),
@@ -247,7 +339,31 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   height: 45,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        if (_controllerNombre.text.isEmpty) {
+                          bandera1 = true;
+                        } else {
+                          if (_controllerPaterno.text.isEmpty) {
+                            bandera2 = true;
+                          } else {
+                            if (_controllerMaterno.text.isEmpty) {
+                              bandera3 = true;
+                            } else {
+                              if (_controllerTelefono.text.isEmpty) {
+                                bandera4 = true;
+                              } else {
+                                if (_controllerEmail.text.isEmpty) {
+                                  bandera5 = true;
+                                } else {
+                                  guardar();
+                                }
+                              }
+                            }
+                          }
+                        }
+                      });
+                    },
                     child: Text(
                       "Guardar",
                       style:

@@ -16,16 +16,26 @@ class DashBoardScreen extends StatelessWidget {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text("María Guadalupe García Hernández"),
-              accountEmail: Text("17030689@itcelaya.edu.mx"),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://image.flaticon.com/icons/png/512/1177/1177568.png'),
-                // child: Image.network(
-                //     'https://image.flaticon.com/icons/png/512/1177/1177568.png'),
-              ),
-              decoration: BoxDecoration(color: ColorSettings.colorPrimary),
-            ),
+                accountName: Text("María Guadalupe García Hernández"),
+                accountEmail: Text("17030689@itcelaya.edu.mx"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    'https://image.flaticon.com/icons/png/512/1177/1177568.png',
+                  ),
+                  // child: Image.network(
+                  //     'https://image.flaticon.com/icons/png/512/1177/1177568.png'),
+                ),
+                decoration: BoxDecoration(color: ColorSettings.colorPrimary),
+                otherAccountsPictures: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/perfil');
+                    },
+                    icon: Icon(Icons.edit),
+                    color: Colors.white,
+                  )
+                ]),
             ListTile(
               title: Text('Propinas'),
               subtitle: Text('Descripción corta'),
@@ -42,7 +52,18 @@ class DashBoardScreen extends StatelessWidget {
               leading: Icon(Icons.phone_android),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
+                Navigator.pop(context);
                 Navigator.pushNamed(context, '/intenciones');
+              },
+            ),
+            ListTile(
+              title: Text('Notas'),
+              subtitle: Text('CRUD notas'),
+              leading: Icon(Icons.phone_android),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/notas');
               },
             )
           ],

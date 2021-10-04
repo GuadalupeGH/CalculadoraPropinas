@@ -22,19 +22,22 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   Future selectImage(opcion) async {
     var picketFile;
-
-    if (opcion == 1) {
-      picketFile = await picker.pickImage(source: ImageSource.camera);
-    } else {
-      picketFile = await picker.pickImage(source: ImageSource.gallery);
-    }
-    setState(() {
-      if (picketFile != null) {
-        this.image = File(picketFile.path);
+    try {
+      if (opcion == 1) {
+        picketFile = await picker.pickImage(source: ImageSource.camera);
       } else {
-        print('Error');
+        picketFile = await picker.pickImage(source: ImageSource.gallery);
       }
-    });
+      setState(() {
+        if (picketFile != null) {
+          this.image = File(picketFile.path);
+        } else {
+          print('Error');
+        }
+      });
+    } catch (e) {
+      print('foto error');
+    }
   }
 
   //implementar metodo antes de que se muestra la interfaz
@@ -87,7 +90,11 @@ class _PerfilScreenState extends State<PerfilScreen> {
                             width: 180,
                             height: 180,
                           )
-                        : Image.file(image),
+                        : Image.file(
+                            image!,
+                            width: 180,
+                            height: 180,
+                          ),
                   ),
                 ),
                 Positioned(
@@ -117,6 +124,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                                                   primary: ColorSettings
                                                       .colorButton),
                                               onPressed: () {
+                                                Navigator.pop(context);
                                                 selectImage(1);
                                               },
                                               child: Row(
@@ -134,6 +142,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                                                   primary: ColorSettings
                                                       .colorButton),
                                               onPressed: () {
+                                                Navigator.pop(context);
                                                 selectImage(2);
                                               },
                                               child: Row(

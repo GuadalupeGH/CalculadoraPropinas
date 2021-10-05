@@ -30,7 +30,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
   bool bandera3 = false;
   bool bandera4 = false;
   bool bandera5 = false;
-
+  bool banderaEntero = false;
   Future obtenerInformacion() async {
     this._databaseHelperPerfil = DatabaseHelperPerfil();
     try {
@@ -118,6 +118,12 @@ class _PerfilScreenState extends State<PerfilScreen> {
           }
         });
       }
+      this.banderaEntero = false;
+      this.bandera1 = false;
+      this.bandera2 = false;
+      this.bandera3 = false;
+      this.bandera4 = false;
+      this.bandera5 = false;
     } catch (Exception) {
       print("Error");
     }
@@ -308,7 +314,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     controller: _controllerTelefono,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      errorText: bandera4 ? 'Campo obligatorio' : null,
+                      errorText: (bandera4)
+                          ? 'Campo obligatorio'
+                          : (banderaEntero ? 'Numero invalido' : null),
                       labelText: "Teléfono",
                       labelStyle:
                           TextStyle(fontSize: 18, color: Colors.black54),
@@ -356,7 +364,12 @@ class _PerfilScreenState extends State<PerfilScreen> {
                                 if (_controllerEmail.text.isEmpty) {
                                   bandera5 = true;
                                 } else {
-                                  guardar();
+                                  try {
+                                    int.parse(_controllerTelefono.text);
+                                    guardar();
+                                  } catch (Exception) {
+                                    banderaEntero = true;
+                                  }
                                 }
                               }
                             }

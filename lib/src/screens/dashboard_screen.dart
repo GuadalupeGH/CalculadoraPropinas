@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:practica2/src/screens/perfil_screen.dart';
 import 'package:practica2/src/utils/color_settings.dart';
 import 'package:practica2/src/models/perfil_model.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../database/database_helper_perfil.dart';
 
@@ -87,6 +85,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/notas');
               },
+            ),
+            ListTile(
+              title: Text('Movies'),
+              subtitle: Text('Prueba API REST'),
+              leading: Icon(Icons.movie),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/movie');
+              },
             )
           ],
         ),
@@ -96,7 +104,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   Widget _datos(PerfilModel perfil) {
     return UserAccountsDrawerHeader(
-        accountName: Text(perfil.nombre!),
+        accountName: Text(
+            perfil.nombre! + ' ' + perfil.aPaterno! + ' ' + perfil.aMaterno!),
         accountEmail: Text(perfil.email!),
         currentAccountPicture: ClipOval(
           child: (perfil.avatar == '')

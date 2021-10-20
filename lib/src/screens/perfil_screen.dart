@@ -315,7 +315,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
                       errorText: (bandera4)
-                          ? 'Campo obligatorio'
+                          ? 'Número invalido'
                           : (banderaEntero ? 'Numero invalido' : null),
                       labelText: "Teléfono",
                       labelStyle:

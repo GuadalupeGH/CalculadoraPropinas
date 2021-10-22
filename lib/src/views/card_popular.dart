@@ -37,21 +37,25 @@ class CardPopularView extends StatelessWidget {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          popular.title!,
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
+                        Expanded(
+                          child: Text(
+                            popular.title!,
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 18.0),
+                          ),
                         ),
                         MaterialButton(
                           onPressed: () {
                             //ruta nombrada
                             Navigator.pushNamed(
                               context,
-                              '/detail',
+                              '/detail2',
                               arguments: {
                                 'id': popular.id,
                                 'title': popular.title,
                                 'overview': popular.overview,
                                 'posterpath': popular.posterPath,
+                                'backdrop_path': popular.backdropPath
                               },
                             );
                           },

@@ -35,6 +35,7 @@ dependencies:
   path_provider: ^2.0.4
   http: ^0.13.3
   youtube_player_flutter: ^8.0.0
+  avatar_glow: ^2.0.1
   #image_picker: ^0.8.4+2
 
 

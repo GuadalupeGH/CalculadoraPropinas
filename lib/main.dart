@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:practica2/src/screens/dashboard_screen.dart';
 import 'package:practica2/src/screens/intenciones_screen.dart';
+import 'package:practica2/src/screens/movies_screens/detail2_screen.dart';
 import 'package:practica2/src/screens/movies_screens/detail_screen.dart';
 import 'package:practica2/src/screens/movies_screens/popular_screen.dart';
 import 'package:practica2/src/screens/notas_screen.dart';
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
         '/perfil': (BuildContext context) => PerfilScreen(),
         '/dashboard': (BuildContext context) => DashBoardScreen(),
         '/movie': (BuildContext context) => PopularScreen(),
-        '/detail': (BuildContext context) => DetailScreen()
+        '/detail': (BuildContext context) => DetailScreen(),
+        '/detail2': (BuildContext context) => Detail2Screen()
       },
       debugShowCheckedModeBanner: false, //eliminar la etiqueta DEBUG
       home: SplashScreen(),

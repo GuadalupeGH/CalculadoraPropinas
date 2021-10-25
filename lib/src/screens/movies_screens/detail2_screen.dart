@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:practica2/src/database/database_helper_movie.dart';
 import 'package:practica2/src/models/actores_model.dart';
 import 'package:practica2/src/models/popular_movies_model.dart';
 import 'package:practica2/src/network/api_actores.dart';
@@ -17,7 +18,8 @@ class Detail2Screen extends StatefulWidget {
 class _Detail2ScreenState extends State<Detail2Screen> {
   ApiActor? apiActor;
   bool favorito = false;
-
+  DatabaseHelperMovie? _databaseHelperMovie;
+  PopularMoviesModel? popular;
   Future video(var id) async {
     ApiVideo(id).getAllVideo().then((value) {
       Navigator.push(
@@ -30,12 +32,50 @@ class _Detail2ScreenState extends State<Detail2Screen> {
     });
   }
 
+  Future actualizar() async {
+    if (this.favorito == false) {
+      _databaseHelperMovie!.getMovie(popular!.id!).then((value) {
+        if (value.id == null) {
+          _databaseHelperMovie!.insert(popular!.toMap()).then((value) {
+            if (value > 0) {
+              this.favorito = true;
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('La pelicula se agrego a favoritos')));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('La solicitud no se completo')));
+            }
+          });
+        }
+      });
+    } else {
+      _databaseHelperMovie!.delete(popular!.id!).then((value) {
+        if (value > 0) {
+          this.favorito = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('La pelicula se removio de favoritos')));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('La solicitud no se completo')));
+        }
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _databaseHelperMovie = DatabaseHelperMovie();
+  }
+
   @override
   Widget build(BuildContext context) {
     final movie =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    PopularMoviesModel popular;
-    apiActor = ApiActor(movie['id']);
+    popular = movie['popular'];
+    apiActor = ApiActor(popular!.id);
+    this.favorito = movie['favorito'];
     return Scaffold(
       backgroundColor: Colors.black,
       body: FutureBuilder(
@@ -48,7 +88,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
               );
             } else {
               if (snapshot.connectionState == ConnectionState.done) {
-                return detalles(snapshot.data!, movie);
+                return detalles(snapshot.data!, popular!);
               } else {
                 return Center(child: CircularProgressIndicator());
               }
@@ -58,7 +98,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
     ;
   }
 
-  Widget detalles(List<ActorModel> actores, Map movie) {
+  Widget detalles(List<ActorModel> actores, PopularMoviesModel movie) {
     return Stack(
       children: [
         Positioned(
@@ -69,12 +109,12 @@ class _Detail2ScreenState extends State<Detail2Screen> {
           child: Stack(
             children: [
               Hero(
-                tag: movie['id'].toString(),
+                tag: movie.id.toString(),
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(
-                        'https://image.tmdb.org/t/p/w500${movie['backdrop_path']}',
+                        'https://image.tmdb.org/t/p/w500${movie.backdropPath}',
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -87,10 +127,10 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                 child: Container(
                   child: ElevatedButton(
                     onPressed: () {
-                      video(movie['id']);
+                      video(movie.id);
                     },
                     child: Hero(
-                      tag: 'video' + movie['id'].toString(),
+                      tag: 'video' + movie.id.toString(),
                       child: Container(
                         child: Row(
                           children: [
@@ -247,7 +287,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                         child: Container(
                           margin: EdgeInsets.only(left: 20),
                           child: Text(
-                            '${movie['title']}',
+                            '${movie.title}',
                             style: TextStyle(
                               fontSize: 25,
                               color: Colors.white,
@@ -274,7 +314,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                             shape: BoxShape.circle,
                           ),
                           child: Text(
-                            '${movie['vote_average']}',
+                            '${movie.voteAverage}',
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.white,
@@ -314,7 +354,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '${movie['release_date']}',
+                                '${movie.releaseDate}',
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.white,
@@ -351,7 +391,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '${movie['original_language']}'.toUpperCase(),
+                                '${movie.originalLanguage}'.toUpperCase(),
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.white,
@@ -372,7 +412,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              this.favorito = !this.favorito;
+                              actualizar();
                             });
                           },
                           child: FaIcon(
@@ -402,7 +442,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                         decoration: BoxDecoration(
                             image: DecorationImage(
                               image: NetworkImage(
-                                'https://image.tmdb.org/t/p/w500${movie['posterpath']}',
+                                'https://image.tmdb.org/t/p/w500${movie.posterPath}',
                               ),
                               fit: BoxFit.cover,
                             ),
@@ -421,7 +461,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                         child: ListView(
                           children: [
                             Text(
-                              '${movie['overview']}',
+                              '${movie.overview}',
                               style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.white54,

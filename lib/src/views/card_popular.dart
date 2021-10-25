@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practica2/src/database/database_helper_movie.dart';
 import 'package:practica2/src/models/popular_movies_model.dart';
 
 class CardPopularView extends StatelessWidget {
@@ -7,6 +8,7 @@ class CardPopularView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var favorito = false;
     return Container(
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(10.0), boxShadow: [
@@ -49,22 +51,49 @@ class CardPopularView extends StatelessWidget {
                         ),
                         MaterialButton(
                           onPressed: () {
+                            DatabaseHelperMovie _databaseHelperMovie =
+                                DatabaseHelperMovie();
+                            _databaseHelperMovie
+                                .getMovie(popular.id!)
+                                .then((value) {
+                              if (value.id == null) {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/detail2',
+                                  arguments: {
+                                    'popular': popular,
+                                    'favorito': false
+                                    // 'id': popular.id,
+                                    // 'title': popular.title,
+                                    // 'overview': popular.overview,
+                                    // 'posterpath': popular.posterPath,
+                                    // 'backdrop_path': popular.backdropPath,
+                                    // 'vote_average': popular.voteAverage,
+                                    // 'original_language': popular.originalLanguage,
+                                    // 'release_date': popular.releaseDate
+                                  },
+                                );
+                              } else {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/detail2',
+                                  arguments: {
+                                    'popular': popular,
+                                    'favorito': true
+                                    // 'id': popular.id,
+                                    // 'title': popular.title,
+                                    // 'overview': popular.overview,
+                                    // 'posterpath': popular.posterPath,
+                                    // 'backdrop_path': popular.backdropPath,
+                                    // 'vote_average': popular.voteAverage,
+                                    // 'original_language': popular.originalLanguage,
+                                    // 'release_date': popular.releaseDate
+                                  },
+                                );
+                              }
+                            });
+
                             //ruta nombrada
-                            Navigator.pushNamed(
-                              context,
-                              '/detail2',
-                              arguments: {
-                                'popular': popular
-                                // 'id': popular.id,
-                                // 'title': popular.title,
-                                // 'overview': popular.overview,
-                                // 'posterpath': popular.posterPath,
-                                // 'backdrop_path': popular.backdropPath,
-                                // 'vote_average': popular.voteAverage,
-                                // 'original_language': popular.originalLanguage,
-                                // 'release_date': popular.releaseDate
-                              },
-                            );
                           },
                           child: Icon(
                             Icons.chevron_right,

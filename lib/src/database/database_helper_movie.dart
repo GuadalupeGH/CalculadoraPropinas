@@ -6,7 +6,7 @@ import 'package:practica2/src/models/popular_movies_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DatabaseHelperPerfil {
+class DatabaseHelperMovie {
 //constante estatica
   static final _nombreBD = 'MOVIE';
   static final _versionDB = 1;
@@ -31,7 +31,7 @@ class DatabaseHelperPerfil {
   //tabla que guarda los datos del perfil
   Future<void> _crearTabla(Database db, int version) async {
     await db.execute(
-        "CREATE TABLE $_nombreTBL( backdropPath VARCHAR(100), id INTEGER, originalLanguage VARCHAR(50), originalTitle VARCHAR(100), overview TEXT, popularity REAL,posterPath VARCHAR(100),releaseDate VARCHAR(100),title VARCHAR(100), voteAverage REAL, voteCount INTEGER )");
+        "CREATE TABLE $_nombreTBL( backdrop_path VARCHAR(100), id INTEGER, original_language VARCHAR(50), original_title VARCHAR(100), overview TEXT, popularity REAL,poster_path VARCHAR(100),release_date VARCHAR(100),title VARCHAR(100), vote_average REAL, vote_count INTEGER )");
   }
 
   Future<int> insert(Map<String, dynamic> row) async {

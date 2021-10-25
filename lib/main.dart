@@ -4,6 +4,7 @@ import 'package:practica2/src/screens/intenciones_screen.dart';
 import 'package:practica2/src/screens/movies_screens/actor_detalles_screen.dart';
 import 'package:practica2/src/screens/movies_screens/detail2_screen.dart';
 import 'package:practica2/src/screens/movies_screens/detail_screen.dart';
+import 'package:practica2/src/screens/movies_screens/favoritos_screen.dart';
 import 'package:practica2/src/screens/movies_screens/popular_screen.dart';
 import 'package:practica2/src/screens/notas_screen.dart';
 import 'package:practica2/src/screens/opcion1_screen.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/movie': (BuildContext context) => PopularScreen(),
         '/detail': (BuildContext context) => DetailScreen(),
         '/detail2': (BuildContext context) => Detail2Screen(),
+        '/favoritos': (BuildContext context) => FavoritosScreen(),
         // '/detailActor': (BuildContext context) => ActorDetallesScreen()
       },
       debugShowCheckedModeBanner: false, //eliminar la etiqueta DEBUG

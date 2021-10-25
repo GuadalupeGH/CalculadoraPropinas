@@ -8,25 +8,28 @@ class CardPopularView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black87,
-                offset: Offset(0.0, 5.0),
-                blurRadius: 2.5)
-          ]),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.circular(10.0), boxShadow: [
+        BoxShadow(
+            color: Colors.black87,
+            offset: Offset(0.0, 5.0),
+            blurRadius: 4,
+            spreadRadius: 1)
+      ]),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10.0),
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            Container(
-              child: FadeInImage(
-                placeholder: AssetImage('assets/activity_indicator.gif'),
-                image: NetworkImage(
-                    'https://image.tmdb.org/t/p/w500${popular.backdropPath}'),
-                fadeInDuration: Duration(milliseconds: 200),
+            Hero(
+              tag: popular.id!.toString(),
+              child: Container(
+                child: FadeInImage(
+                  placeholder: AssetImage('assets/activity_indicator.gif'),
+                  image: NetworkImage(
+                      'https://image.tmdb.org/t/p/w500${popular.backdropPath}'),
+                  fadeInDuration: Duration(milliseconds: 200),
+                ),
               ),
             ),
             Opacity(
@@ -51,14 +54,15 @@ class CardPopularView extends StatelessWidget {
                               context,
                               '/detail2',
                               arguments: {
-                                'id': popular.id,
-                                'title': popular.title,
-                                'overview': popular.overview,
-                                'posterpath': popular.posterPath,
-                                'backdrop_path': popular.backdropPath,
-                                'vote_average': popular.voteAverage,
-                                'original_language': popular.originalLanguage,
-                                'release_date': popular.releaseDate
+                                'popular': popular
+                                // 'id': popular.id,
+                                // 'title': popular.title,
+                                // 'overview': popular.overview,
+                                // 'posterpath': popular.posterPath,
+                                // 'backdrop_path': popular.backdropPath,
+                                // 'vote_average': popular.voteAverage,
+                                // 'original_language': popular.originalLanguage,
+                                // 'release_date': popular.releaseDate
                               },
                             );
                           },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:practica2/src/models/actores_model.dart';
+import 'package:practica2/src/models/popular_movies_model.dart';
 import 'package:practica2/src/network/api_actores.dart';
 import 'package:practica2/src/network/api_video.dart';
 import 'package:practica2/src/screens/movies_screens/actor_detalles_screen.dart';
@@ -15,6 +16,7 @@ class Detail2Screen extends StatefulWidget {
 
 class _Detail2ScreenState extends State<Detail2Screen> {
   ApiActor? apiActor;
+  bool favorito = false;
 
   Future video(var id) async {
     ApiVideo(id).getAllVideo().then((value) {
@@ -32,6 +34,7 @@ class _Detail2ScreenState extends State<Detail2Screen> {
   Widget build(BuildContext context) {
     final movie =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    PopularMoviesModel popular;
     apiActor = ApiActor(movie['id']);
     return Scaffold(
       backgroundColor: Colors.black,
@@ -65,13 +68,16 @@ class _Detail2ScreenState extends State<Detail2Screen> {
           height: 230,
           child: Stack(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      'https://image.tmdb.org/t/p/w500${movie['backdrop_path']}',
+              Hero(
+                tag: movie['id'].toString(),
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        'https://image.tmdb.org/t/p/w500${movie['backdrop_path']}',
+                      ),
+                      fit: BoxFit.cover,
                     ),
-                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -83,25 +89,28 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                     onPressed: () {
                       video(movie['id']);
                     },
-                    child: Container(
-                      child: Row(
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.playCircle,
-                            color: Colors.black38,
-                            size: 30,
-                          ),
-                          Text(
-                            '  Ver video',
-                            style: TextStyle(
-                              decoration: TextDecoration.none,
+                    child: Hero(
+                      tag: 'video' + movie['id'].toString(),
+                      child: Container(
+                        child: Row(
+                          children: [
+                            FaIcon(
+                              FontAwesomeIcons.playCircle,
                               color: Colors.black38,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Ubuntu',
+                              size: 30,
                             ),
-                          )
-                        ],
+                            Text(
+                              '  Ver video',
+                              style: TextStyle(
+                                decoration: TextDecoration.none,
+                                color: Colors.black38,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Ubuntu',
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -164,20 +173,23 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                             },
                             child: Column(
                               children: [
-                                Container(
-                                  height: 70,
-                                  width: 70,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage((actor.profilePath
-                                                  .toString() !=
-                                              '')
-                                          ? 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' +
-                                              actor.profilePath.toString()
-                                          : 'http://assets.stickpng.com/images/585e4beacb11b227491c3399.png'),
-                                      fit: BoxFit.cover,
+                                Hero(
+                                  tag: actor.id!,
+                                  child: Container(
+                                    height: 70,
+                                    width: 70,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage((actor.profilePath
+                                                    .toString() !=
+                                                '')
+                                            ? 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' +
+                                                actor.profilePath.toString()
+                                            : 'http://assets.stickpng.com/images/585e4beacb11b227491c3399.png'),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      shape: BoxShape.circle,
                                     ),
-                                    shape: BoxShape.circle,
                                   ),
                                 ),
                                 Container(
@@ -279,14 +291,14 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                 Row(
                   children: [
                     Flexible(
-                      flex: 2,
+                      flex: 3,
                       child: Container(
                         margin: EdgeInsets.only(
                           left: 20,
                           right: 10,
                         ),
-                        width: 150,
-                        height: 35,
+                        width: 170,
+                        height: 40,
                         decoration: BoxDecoration(
                             color: Color.fromRGBO(31, 33, 30, 1),
                             borderRadius: BorderRadius.circular(30)),
@@ -349,6 +361,28 @@ class _Detail2ScreenState extends State<Detail2Screen> {
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        margin: EdgeInsets.only(right: 20),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              this.favorito = !this.favorito;
+                            });
+                          },
+                          child: FaIcon(
+                            (this.favorito)
+                                ? FontAwesomeIcons.solidHeart
+                                : FontAwesomeIcons.heart,
+                            color: (this.favorito) ? Colors.red : Colors.white,
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.transparent, elevation: 0),
                         ),
                       ),
                     )

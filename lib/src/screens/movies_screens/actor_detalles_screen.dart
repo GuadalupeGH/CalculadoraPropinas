@@ -7,28 +7,52 @@ class ActorDetallesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.black,
       padding: EdgeInsets.all(20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Container(
-            margin: EdgeInsets.only(top: 20),
-            height: 180,
-            width: 180,
+        Hero(
+          tag: actor.id!,
+          child: Container(
+            margin: EdgeInsets.only(top: 100),
+            height: 300,
+            width: 300,
             decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage((actor.profilePath.toString() != '')
-                        ? 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' +
-                            actor.profilePath.toString()
-                        : 'http://assets.stickpng.com/images/585e4beacb11b227491c3399.png')))),
-        Container(
-          child: Text(actor.name!),
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage((actor.profilePath.toString() != '')
+                    ? 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' +
+                        actor.profilePath.toString()
+                    : 'http://assets.stickpng.com/images/585e4beacb11b227491c3399.png'),
+              ),
+            ),
+          ),
         ),
         Container(
-          child: Text(actor.character!),
+          margin: EdgeInsets.only(top: 50),
+          child: Text(
+            actor.name!,
+            style: TextStyle(
+              fontSize: 25,
+              color: Colors.white,
+              fontFamily: 'Ubuntu',
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.none,
+            ),
+          ),
         ),
         Container(
-          child: Text(actor.originalName!),
+          margin: EdgeInsets.only(top: 30),
+          child: Text(
+            actor.character!,
+            style: TextStyle(
+              fontSize: 25,
+              color: Colors.white,
+              fontFamily: 'Ubuntu',
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.none,
+            ),
+          ),
         ),
       ]),
     );

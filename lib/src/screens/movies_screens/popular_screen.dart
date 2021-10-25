@@ -41,12 +41,16 @@ class _PopularScreenState extends State<PopularScreen> {
   }
 
   Widget _listPopularMovies(List<PopularMoviesModel>? movies) {
-    return ListView.separated(
-        itemBuilder: (context, index) {
-          PopularMoviesModel popular = movies![index];
-          return CardPopularView(popular: popular);
-        },
-        separatorBuilder: (_, __) => Divider(height: 10),
-        itemCount: movies!.length);
+    return Container(
+      color: Colors.black87,
+      padding: EdgeInsets.all(20),
+      child: ListView.separated(
+          itemBuilder: (context, index) {
+            PopularMoviesModel popular = movies![index];
+            return CardPopularView(popular: popular);
+          },
+          separatorBuilder: (_, __) => Divider(height: 20),
+          itemCount: movies!.length),
+    );
   }
 }

@@ -55,7 +55,10 @@ class CardPopularView extends StatelessWidget {
                                 'title': popular.title,
                                 'overview': popular.overview,
                                 'posterpath': popular.posterPath,
-                                'backdrop_path': popular.backdropPath
+                                'backdrop_path': popular.backdropPath,
+                                'vote_average': popular.voteAverage,
+                                'original_language': popular.originalLanguage,
+                                'release_date': popular.releaseDate
                               },
                             );
                           },
